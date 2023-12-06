@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: resource-database
+  namespace: k8s-program
 spec:
   serviceName: "resource-database"
   selector:
