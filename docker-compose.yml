@@ -1,0 +1,74 @@
+version: '3.9'
+
+services:
+  resource-service:
+    container_name: resource-service-container
+    build:
+      context: ./resource-service
+    image: resource-service-image:v1
+    #    depends_on:
+    #      - resource-service-db
+    #      - song-service-db
+    #      - registration-service
+
+    ports:
+      - "8080:8080"
+    environment:
+      - RESOURCE_SERVICE_PORT=8080
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=pass
+      - RESOURCE_POSTGRES_DB=jdbc:postgresql://resource-service-db:5432/mp3resource
+      - SONG_SERVICE_URL=http://song-service/songs
+    networks:
+      - microservice
+
+  song-service:
+    container_name: song-service-container
+    build:
+      context: ./song-service
+    image: song-service-image:v1
+    deploy:
+      replicas: 2
+    ports:
+      - "8081:8081"
+    environment:
+      - SONG_SERVICE_PORT=8081
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=pass
+      - SONG_POSTGRES_DB=jdbc:postgresql://song-service-db:5432/songs
+    networks:
+      - microservice
+
+  resource-service-db:
+    image: postgres:14.9
+    container_name: resource-service-postgres
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_USER=root
+      - POSTGRES_DB=mp3resource
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./config/resource-service:/docker-entrypoint-initdb.d
+    networks:
+      - microservice
+
+  song-service-db:
+    image: postgres:14.9
+    container_name: song-service-postgres
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_USER=root
+      - POSTGRES_DB=songs
+    ports:
+      - "6432:5432"
+    volumes:
+      - ./config/song-service:/docker-entrypoint-initdb.d
+    networks:
+      - microservice
+
+networks:
+  microservice:
+    driver: bridge

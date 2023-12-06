@@ -1,0 +1,4 @@
+rootProject.name = 'kubernetes-for-java-engineers'
+include 'song-service'
+include 'resource-service'
+include 'registration-service'
