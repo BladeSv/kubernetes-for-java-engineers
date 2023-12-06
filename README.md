@@ -13,8 +13,6 @@ https://github.com/BladeSv/introduction-to-microservices
 
 In this module you will create infrastructure for your k8s cluster and deploy your microservices applications there.
 
-## Sub-task 1: Install k8s
-
 If you have personal licence in Docker Desktop, go to Docker Desktop settings, choose Kubernetes and click checkbox '
 Enable Kubernetes'. You will need to wait for the installation and restart docker. In other cases you should go the hard
 way:
@@ -32,7 +30,7 @@ faced: [https://stackoverflow.com/questions/57431890/error-response-from-daemon-
 After docker will start running Hyper-V containers, make sure to run `minikube docker-env | Invoke-Expression`. This
 command will make minikube runn containers on Hyper-V too
 
-## Sub-task 2: Deploy containers in k8s
+## Sub-task 1: Deploy containers in k8s
 
 In this subtask you need to create manifest `.yml` files with configuration for deployment. These files should contain
 the next objects:
@@ -48,7 +46,7 @@ To deploy, run `kubectl apply ./` in folders where yml files are stored. To view
 run `kubectl get all -n=<your_namespace>`.  
 Along with services and deployments, this command outputs pods and replica-sets. **Find out why.**
 
-## Sub-task 3: Persistent volumes
+## Sub-task 2: Persistent volumes
 
 In this subtask you will make your app pods use local storage. This will ensure that no data is lost during pod
 deploy/redeploy.
@@ -59,7 +57,7 @@ deploy/redeploy.
 3. Test PersistentVolume: create any file inside the container in the volume directory, scale down deployment or delete
    pod, let replicaset automatically create pod, ensure that file still exists.
 
-## Sub-task 4: Stateful Sets
+## Sub-task 3: Stateful Sets
 
 1. Use StatefulSet object (not Deployment) to create databases.
 2. Configure default storage class "hostpath" for volume claim templates, so allowing k8s to provision storage with
