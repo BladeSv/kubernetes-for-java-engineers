@@ -42,13 +42,13 @@ public class ResourceService {
         Mp3Resource mp3Resource = Mp3Resource.builder().mp3Record(resourceBytes).fileName(originalFilename).build();
         Mp3Resource savedMp3Resource = repository.save(mp3Resource);
         String responseMessage = String.format("{\"id\": %s}", savedMp3Resource.getId());
-        Song song = resourceParser.parseMp3(file, savedMp3Resource.getId().toString());
-        boolean isSuccessful = sendSongMetadata(song);
-
-        if (!isSuccessful) {
-            repository.deleteById(savedMp3Resource.getId());
-            responseMessage = "Can\'t save song resource";
-        }
+//        Song song = resourceParser.parseMp3(file, savedMp3Resource.getId().toString());
+//        boolean isSuccessful = sendSongMetadata(song);
+//
+//        if (!isSuccessful) {
+//            repository.deleteById(savedMp3Resource.getId());
+//            responseMessage = "Can\'t save song resource";
+//        }
 
         return responseMessage;
     }
