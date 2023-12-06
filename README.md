@@ -1,118 +1,70 @@
-# Introduction to microservices course
+# Kubernetes for Java Engineers
 
-## Install project
+## Base information
 
-Run two command lines in root directory terminal:
+Project was taken from Introduction to microservices course
+https://github.com/BladeSv/introduction-to-microservices
 
-- ```docker compose build```
-- ```docker compose up```
-
-# Task 1
-
-## Table of Content
-
-- What to do
-- Sub-task 1: Resource Service
-- Sub-task 2: Song Service
-
-## What to do
-
-In this module you will need to create base structure of microservices system. During this task you need to implement
-the next two services:
-
-- **Resource Service**
-- **Song Service**
-
-## Sub-task 1: Resource Service
-
-For a **Resource Service**, it is recommended to implement a service with CRUD operations for processing mp3 files.
-
-**Service definition could be next:**
-
-<table dir="auto"><tbody><tr><td><b>POST /resources</b></td><td colspan="6"><b>Upload new resource</b></td></tr><tr><td rowspan="2"><b>Request</b></td><td><i>Parameter</i></td><td><i>Description</i></td><td><i>Restriction</i></td><td><i>Body example</i></td><td><i>Description</i></td><td><i>Restriction</i></td></tr><tr><td></td><td></td><td></td><td>Audio data binary</td><td>Content type – audio/mpeg</td><td>MP3 audio data</td></tr><tr><td rowspan="2"><b>Response</b></td><td><i>Body</i></td><td><i>Description</i></td><td colspan="4"><i>Code</i></td></tr><tr><td><p>{</p><p>&nbsp;&nbsp;&nbsp;&nbsp;"id":1123</p><p>}</p></td><td>Integer id — ID of the created resource</td><td colspan="4"><p>200 – OK</p><p>400 – Validation failed or request body is invalid MP3</p><p>500 – An internal server error has occurred</p></td></tr><tr><td><b>GET /resources/{id}</b></td><td colspan="6"><b>Get the binary audio data of a resource</b></td></tr><tr><td rowspan="3"><b>Request</b></td><td><i>Parameter</i></td><td><i>Description</i></td><td><i>Restriction</i></td><td><i>Body example</i></td><td><i>Description</i></td><td><i>Restriction</i></td></tr><tr><td>Integer id</td><td>The ID of the resource to get</td><td>ID of an existing resource</td><td></td><td></td><td></td></tr><tr></tr><tr><td rowspan="2"><b>Response</b></td><td><i>Body</i></td><td><i>Description</i></td><td colspan="4"><i>Code</i></td></tr><tr><td>Audio bytes</td><td></td><td colspan="4"><p>200 – OK</p><p>404 – The resource with the specified id does not exist</p><p>500 – An internal server error has occurred</p></td></tr><tr><td><b>DELETE /resources?id=1,2</b></td><td colspan="6"><b>Delete a resource(s). If there is no resource for id, do nothing</b></td></tr><tr><td rowspan="2"><b>Request</b></td><td><i>Parameter</i></td><td><i>Description</i></td><td><i>Restriction</i></td><td><i>Body example</i></td><td><i>Description</i></td><td><i>Restriction</i></td></tr><tr><td>String id</td><td>CSV (Comma Separated Values) of resource IDs to remove</td><td>Valid CSV length &lt; 200 characters</td><td></td><td></td><td></td></tr><tr><td rowspan="2"><b>Response</b></td><td><i>Body</i></td><td><i>Description</i></td><td colspan="4"><i>Code</i></td></tr><tr><td><p>{</p><p>&nbsp;&nbsp;&nbsp;&nbsp;"ids": [1,2]</p><p>}</p></td><td>Integer [] ids – ids of deleted resources</td><td colspan="4"><p>200 – OK</p><p>500 – An internal server error has occurred</p></td></tr></tbody></table>
-
-When uploading a mp3 file, the **Resource Service** should process the file in this way:
-
-- Extract file metadata. An external library can be used for this purpose.(
-  e.g. [Apache Tika](https://www.tutorialspoint.com/tika/tika_extracting_mp3_files.htm)).
-- Store mp3 file to the underlying database of the service as Blob.
-- Invoke **Song Service** to save mp3 file metadata.
-
-## Sub-task 2: Song Service
-
-For the **Song Service**, it is recommended to implement a simple CRUD service to manage the song record (metadata). The
-service should provide the ability to manage some metadata about the songs (artist, album, etc.). Make sure the service
-is still available over HTTP.
-
-**Service definition could be next:**
-
-<table dir="auto"><tbody><tr><td><b>POST /songs</b></td><td colspan="6"><b>Create a new song metadata record in database</b></td></tr><tr><td rowspan="2"><b>Request</b></td><td><i>Parameter</i></td><td><i>Description</i></td><td colspan="2"><i>Body example</i></td><td><i>Description</i></td><td><i>Restriction</i></td></tr><tr><td></td><td></td><td colspan="2"><p>{</p><p>&nbsp;&nbsp;&nbsp;&nbsp;"name": "We are the champions",</p><p>&nbsp;&nbsp;&nbsp;&nbsp;"artist": "Queen",</p><p>&nbsp;&nbsp;&nbsp;&nbsp;"album": "News of the world",</p><p>&nbsp;&nbsp;&nbsp;&nbsp;"length": "2:59",</p><p>&nbsp;&nbsp;&nbsp;&nbsp;"resourceId": "123",</p><p>&nbsp;&nbsp;&nbsp;&nbsp;"year": ""1977</p><p>}</p></td><td>Song metadata record, referencing to resource id (mp3 file itself)</td><td>MP3 audio data</td></tr><tr><td rowspan="2"><b>Response</b></td><td><i>Body</i></td><td><i>Description</i></td><td colspan="4"><i>Code</i></td></tr><tr><td><p>{</p><p>&nbsp;&nbsp;&nbsp;&nbsp;"id":1123</p><p>}</p></td><td>Integer id – ID of the created song metadata</td><td colspan="4"><p>200 – OK</p><p>400 – Song metadata missing validation error</p><p>500 – An internal server error has occurred</p></td></tr><tr><td><b>GET /songs/{id}</b></td><td colspan="6"><b>Get song metadata</b></td></tr><tr><td rowspan="2"><b>Request</b></td><td><i>Parameter</i></td><td><i>Description</i></td><td><i>Restriction</i></td><td><i>Body example</i></td><td><i>Description</i></td><td><i>Restriction</i></td></tr><tr><td>Integer id</td><td>Song metadata ID to get</td><td>ID of an existing song metadata</td><td></td><td></td><td></td></tr><tr><td rowspan="2"><b>Response</b></td><td colspan="2"><i>Body</i></td><td colspan="2"><i>Description</i></td><td colspan="2"><i>Code</i></td></tr><tr><td colspan="2"><p>{</p><p>&nbsp;&nbsp;&nbsp;&nbsp;"name": "We are the champions",</p><p>&nbsp;&nbsp;&nbsp;&nbsp;"artist": "Queen",</p><p>&nbsp;&nbsp;&nbsp;&nbsp;"album": "News of the world",</p><p>&nbsp;&nbsp;&nbsp;&nbsp;"length": "2:59",</p><p>&nbsp;&nbsp;&nbsp;&nbsp;"resourceId": "123",</p><p>&nbsp;&nbsp;&nbsp;&nbsp;"year": ""1977</p><p>}</p></td><td colspan="2"></td><td colspan="2"><p>200 – OK</p><p>404 – The song metadata with the specified id does not exist</p><p>500 – An internal server error has occurred</p></td></tr><tr><td><b>DELETE /songs?id=1,2</b></td><td colspan="6"><b>Delete a song(s) metadata. If there is no song metadata for id, do nothing</b></td></tr><tr><td rowspan="2"><b>Request</b></td><td><i>Parameter</i></td><td><i>Description</i></td><td><i>Restriction</i></td><td><i>Body example</i></td><td><i>Description</i></td><td><i>Restriction</i></td></tr><tr><td>String id</td><td>CSV of song metadata IDs to remove</td><td>Valid CSV length &lt; 200 characters</td><td></td><td></td><td></td></tr><tr><td rowspan="2"><b>Response</b></td><td colspan="2"><i>Body</i></td><td colspan="2"><i>Description</i></td><td colspan="2"><i>Code</i></td></tr><tr><td colspan="2"><p>{</p><p>&nbsp;&nbsp;&nbsp;&nbsp;"ids": [1,2]</p><p>}</p></td><td colspan="2">Integer [] ids - IDs of deleted resources</td><td colspan="2"><p>200 – OK</p><p>500 – An internal server error has occurred</p></td></tr></tbody></table>
-
-**Note**
-
-As a database, it is best to use Docker database/storage containers (
-e.g. [postgres image](https://hub.docker.com/_/postgres)) in the implementation.
+### Project scheme
 
 [![](./assests/img.png)](https://git.epam.com/epm-cdp/global-java-foundation-program/java-courses/-/raw/main/introduction-to-microservices/tasks/microservice_architecture_overview/images/microservice_architecture_overview.png)
 
-# Task 2
-
-## Table of Content
-
-- What to do
-- Sub-task 1: Docker images
-- Sub-task 2: Docker Compose file
-
 ## What to do
 
-In this module you will need to adjust your services with containerization approach.
+In this module you will create infrastructure for your k8s cluster and deploy your microservices applications there.
 
-## Sub-task 1: Docker images
+## Sub-task 1: Install k8s
 
-1. Package your applications as Docker images.
-2. For each of your services:
+If you have personal licence in Docker Desktop, go to Docker Desktop settings, choose Kubernetes and click checkbox '
+Enable Kubernetes'. You will need to wait for the installation and restart docker. In other cases you should go the hard
+way:
 
-- Create a _Docker_ file that would contain instruction on how to package your project.
-- Build a docker image and run it, mapping an external port to verify that application can be started and respond to
-  requests.
+1. Install docker engine (if not installed) as
+   binaries: [https://docs.docker.com/engine/install/binaries/](https://docs.docker.com/engine/install/binaries/). And
+   make sure docker is running by running `docker --version`
+2. Install minikube: [https://minikube.sigs.k8s.io/docs/start/](https://minikube.sigs.k8s.io/docs/start/). Verify by
+   running `minikube start`
+3. Install kubectl: [https://kubernetes.io/docs/tasks/tools/](https://kubernetes.io/docs/tasks/tools/) Verify by
+   running `kubectl version`
 
-## Sub-task 2: Docker Compose file
+_Note_: When using Windows, running PowerShell as administrator may help. Here's the solution to majority of topics I
+faced: [https://stackoverflow.com/questions/57431890/error-response-from-daemon-hcsshimcreatecomputesystem-the-virtual-machine-co](https://stackoverflow.com/questions/57431890/error-response-from-daemon-hcsshimcreatecomputesystem-the-virtual-machine-co)  
+After docker will start running Hyper-V containers, make sure to run `minikube docker-env | Invoke-Expression`. This
+command will make minikube runn containers on Hyper-V too
 
-1. When all applications are successfully packaged, create a _docker-compose.yml_ file that would list all applications
-   and 3rd party dependencies to successfully start the project. Add init scripts for the database to run when container
-   starts up. Once you have a compose file, you can create and start your application containers with a single
-   command: `docker-compose up`.
+## Sub-task 2: Deploy containers in k8s
 
-Please note the following:
+In this subtask you need to create manifest `.yml` files with configuration for deployment. These files should contain
+the next objects:
 
-- Use an _.env_ file to replace all environment variables depending on the set-up.
-- For 3rd party dependencies try to use the _–alpine_ images whenever it's possible.
-- For project applications use the build property as these images are not going to be pulled from a public hub.
-- Use logical service names to cross-reference services.
+- Namespace (f.e. k8s-program). All other objects will use this namespace;
+- 2 Services (one for each service of your system). Use NodePort service type and configure nodePort field for testing.
+- 2 Deployments (one for each service of your system). For apps deployments set `replicas: 2`. You should add
+  environment variables for your applications here.
 
-Possible container options for existing resources:
+_Note_: don't forget to specify namespace all objects.  
+Delete EXPOSE instruction from dockerfiles and upgrade images.  
+To deploy, run `kubectl apply ./` in folders where yml files are stored. To view all objects
+run `kubectl get all -n=<your_namespace>`.  
+Along with services and deployments, this command outputs pods and replica-sets. **Find out why.**
 
-- [postgres DB](https://hub.docker.com/_/postgres)
-- [mysql db](https://hub.docker.com/_/mysql)
-- [Local stack (aws emulator)](https://hub.docker.com/r/localstack/localstack)
+## Sub-task 3: Persistent volumes
 
-# Task 3
+In this subtask you will make your app pods use local storage. This will ensure that no data is lost during pod
+deploy/redeploy.
 
-## Table of Content
+1. Add PersistentVolume object with "manual" storage class for the User service (create separate manifest file).
+   Configure hostPath field so PersistentVolume create directory on the node.
+2. Add PersistenceVolumeClaim objects to your manifest and reference them from User deployment object.
+3. Test PersistentVolume: create any file inside the container in the volume directory, scale down deployment or delete
+   pod, let replicaset automatically create pod, ensure that file still exists.
 
-- [What to do]
-- [Sub-task: Service registry](
+## Sub-task 4: Stateful Sets
 
-## What to do
+1. Use StatefulSet object (not Deployment) to create databases.
+2. Configure default storage class "hostpath" for volume claim templates, so allowing k8s to provision storage with
+   default provisioner (PersistentVolume will be created automatically).
+3. Create 2 Services (one for each StatefulSet of your system). Use ClusterIP service type to restrict external access.
 
-In this task you need to choose one of Service registry tool and inject it into your infrastructure. Please, find the
-sample implementation here: [Eureka Example](https://www.javainuse.com/spring/cloud-gateway-eureka)
-
-![task3.png](assests%2Ftask3.png)
-
-## Sub-task: Service registry
-
-1. Use Eureka Service
-   Registry ([Service Registration and Discovery](https://spring.io/guides/gs/service-registration-and-discovery/)).
-2. All microservices should be Eureka Clients, and they must be registered with the Eureka Server (made up of the Load
-   Balancer and the Service Registry).
+_Note_: You can also use `kubectl port-forward pod-name 5433:5432` (local machine port:container port) console command
+to temporarily open access to the database pod
