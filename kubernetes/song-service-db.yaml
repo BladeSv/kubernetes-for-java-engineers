@@ -21,11 +21,20 @@ spec:
             - containerPort: 5432
           env:
             - name: POSTGRES_USER
-              value: root
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret-config-map
+                  key: POSTGRES_USER
             - name: POSTGRES_PASSWORD
-              value: pass
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret-config-map
+                  key: POSTGRES_PASSWORD
             - name: POSTGRES_DB
-              value: songs
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config-map
+                  key: SONG_POSTGRES_DB_NAME
           volumeMounts:
             - name: song-database-db-pvc
               mountPath: /var/lib/postgresql/data

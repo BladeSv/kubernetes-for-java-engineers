@@ -22,15 +22,30 @@ spec:
           image: resource-service-image:v2
           env:
             - name: SONG_SERVICE_URL
-              value: http://song-service-service:8081/songs
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config-map
+                  key: SONG_SERVICE_URL
             - name: RESOURCE_SERVICE_PORT
-              value: '8080'
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config-map
+                  key: RESOURCE_SERVICE_PORT
             - name: RESOURCE_POSTGRES_DB
-              value: jdbc:postgresql://resource-database-service:5432/mp3resource
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config-map
+                  key: RESOURCE_POSTGRES_DB
             - name: POSTGRES_USER
-              value: root
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret-config-map
+                  key: POSTGRES_USER
             - name: POSTGRES_PASSWORD
-              value: pass
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret-config-map
+                  key: POSTGRES_PASSWORD
           ports:
             - containerPort: 8080
           imagePullPolicy: Never
