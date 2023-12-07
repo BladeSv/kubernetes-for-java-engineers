@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -26,6 +27,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @NoArgsConstructor
 @Service
+@Slf4j
 public class ResourceService {
 
     @Autowired
@@ -43,6 +45,7 @@ public class ResourceService {
         Mp3Resource savedMp3Resource = repository.save(mp3Resource);
         String responseMessage = String.format("{\"id\": %s}", savedMp3Resource.getId());
         Song song = resourceParser.parseMp3(file, savedMp3Resource.getId().toString());
+        log.info("Parsed mp3 metadata- " + song);
         boolean isSuccessful = sendSongMetadata(song);
 
         if (!isSuccessful) {
@@ -79,6 +82,7 @@ public class ResourceService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> request = new HttpEntity(songJson, headers);
         RestTemplate restTemplate = new RestTemplate();
+        log.info("Will connect to - " + songServiceUrl);
         String response = restTemplate.postForObject(songServiceUrl, request, String.class);
         return response != null && !response.isBlank();
     }

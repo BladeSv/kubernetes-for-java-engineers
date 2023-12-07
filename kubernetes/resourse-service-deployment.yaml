@@ -19,7 +19,21 @@ spec:
     spec:
       containers:
         - name: resource-service-container
-          image: resource-service-image:v2
+          image: resource-service-image:v5
+          livenessProbe:
+            httpGet:
+              port: 8080
+              path: /actuator/health/liveness
+            initialDelaySeconds: 30
+            periodSeconds: 3
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: /actuator/health/readiness
+            initialDelaySeconds: 30
+            periodSeconds: 3
+            failureThreshold: 5
           env:
             - name: SONG_SERVICE_URL
               valueFrom:

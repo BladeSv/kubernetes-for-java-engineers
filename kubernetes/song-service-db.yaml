@@ -17,6 +17,26 @@ spec:
       containers:
         - name: song-database
           image: postgres:14.9
+          livenessProbe:
+            exec:
+              command:
+                - /bin/bash
+                - -c
+                - pg_isready -U $POSTGRES_USER -d $POSTGRES_DB
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 5
+          readinessProbe:
+            exec:
+              command:
+                - /bin/bash
+                - -c
+                - PGPASSWORD=$POSTGRES_PASSWORD psql -U $POSTGRES_USER -d $POSTGRES_DB -c 'SELECT 1 FROM song_dao LIMIT 1;'
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 5
           ports:
             - containerPort: 5432
           env:
@@ -38,6 +58,13 @@ spec:
           volumeMounts:
             - name: song-database-db-pvc
               mountPath: /var/lib/postgresql/data
+            - name: resource-database-init-vol
+              mountPath: /docker-entrypoint-initdb.d/init.sql
+              subPath: init-song-db-schema
+      volumes:
+        - name: resource-database-init-vol
+          configMap:
+            name: app-config-map
   volumeClaimTemplates:
     - metadata:
         name: song-database-db-pvc
