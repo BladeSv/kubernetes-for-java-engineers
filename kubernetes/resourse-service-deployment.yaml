@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: resource-service-container
-          image: resource-service-image:v5
+          image: resource-service-image:v6
           livenessProbe:
             httpGet:
               port: 8080
@@ -64,4 +64,9 @@ spec:
             - containerPort: 8080
           imagePullPolicy: Never
       restartPolicy: Always
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+
       

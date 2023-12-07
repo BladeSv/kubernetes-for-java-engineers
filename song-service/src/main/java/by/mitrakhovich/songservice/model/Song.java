@@ -24,4 +24,5 @@ public class Song {
     private String resourceId;
     @Pattern(regexp = "\\d{4}")
     private String year;
+    private String genre;
 }

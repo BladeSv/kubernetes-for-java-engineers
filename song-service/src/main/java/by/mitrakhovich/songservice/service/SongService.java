@@ -25,7 +25,9 @@ public class SongService {
 
     public Song getSongById(Integer id) {
         SongDao songDao = repository.findById(id).orElseThrow(() -> new NotFoundSongException("The song metadata with the specified id does not exist"));
-        return mapper.songDaoToSong(songDao);
+        Song song = mapper.songDaoToSong(songDao);
+        song.setGenre(song.getArtist() + "_genre");
+        return song;
     }
 
     public String removeSongsByIds(List<Integer> ids) {

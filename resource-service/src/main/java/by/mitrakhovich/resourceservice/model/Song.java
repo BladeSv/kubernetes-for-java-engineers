@@ -14,4 +14,5 @@ public class Song {
     private String length;
     private String resourceId;
     private String year;
+    private String genre;
 }
