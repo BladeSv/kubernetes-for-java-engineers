@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: resource-database
+  namespace: k8s-program
+spec:
+  serviceName: "resource-database"
+  selector:
+    matchLabels:
+      app: resource-database
+  template:
+    metadata:
+      namespace: k8s-program
+      labels:
+        app: resource-database
+    spec:
+      containers:
+        - name: resource-database
+          image: postgres:14.9
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: root
+            - name: POSTGRES_PASSWORD
+              value: pass
+            - name: POSTGRES_DB
+              value: mp3resource
+          volumeMounts:
+            - name: resource-database-db-pvc
+              mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+    - metadata:
+        name: resource-database-db-pvc
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi

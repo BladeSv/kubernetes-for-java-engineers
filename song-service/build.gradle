@@ -33,9 +33,9 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     // https://mvnrepository.com/artifact/org.postgresql/postgresql
-//    implementation group: 'org.postgresql', name: 'postgresql', version: '42.6.0'
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.6.0'
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
-    implementation group: 'com.h2database', name: 'h2', version: '2.2.224'
+//    implementation group: 'com.h2database', name: 'h2', version: '2.2.224'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 }
 
