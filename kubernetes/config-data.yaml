@@ -4,10 +4,7 @@ metadata:
   name: app-config-map
   namespace: k8s-program
 data:
-  #  SONG_SERVICE_URL: "http://song-service-service:8081/songs"
-  #  SONG_SERVICE_URL: "http://song-service-service:8081/songs"
   SONG_SERVICE_URL: "http://song-service-service.k8s-program.svc.cluster.local:8081/songs"
-
 
   RESOURCE_SERVICE_PORT: "8080"
   RESOURCE_POSTGRES_DB: "jdbc:postgresql://resource-database-service:5432/mp3resource"
