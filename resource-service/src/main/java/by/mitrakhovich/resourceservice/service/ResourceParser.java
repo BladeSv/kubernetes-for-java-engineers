@@ -38,6 +38,7 @@ public class ResourceParser {
                     .length(lengthInMilliseconds.orElse("0:00"))
                     .year(year.orElse("0000"))
                     .resourceId(resourceId)
+                    .genre(artist.orElse(NO_DATA) + "_genre")
                     .build();
 
         } catch (IOException ex) {
@@ -48,6 +49,7 @@ public class ResourceParser {
                     .length("0:00")
                     .year("0000")
                     .resourceId(resourceId)
+                    .genre("genre")
                     .build();
         }
 
