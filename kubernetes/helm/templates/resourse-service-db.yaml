@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: song-database
-  namespace: k8s-program
+  name: resource-database
+  namespace: {{ .Release.Name }}
 spec:
   serviceName: "resource-database"
   selector:
     matchLabels:
-      app: song-database
+      app: resource-database
   template:
     metadata:
-      namespace: k8s-program
+      namespace: {{ .Release.Name }}
       labels:
-        app: song-database
+        app: resource-database
     spec:
       containers:
-        - name: song-database
+        - name: resource-database
           image: postgres:14.9
           livenessProbe:
             exec:
@@ -23,8 +23,8 @@ spec:
                 - /bin/bash
                 - -c
                 - pg_isready -U $POSTGRES_USER -d $POSTGRES_DB
-            initialDelaySeconds: 10
-            periodSeconds: 5
+            initialDelaySeconds: 3
+            periodSeconds: 10
             timeoutSeconds: 3
             failureThreshold: 5
           readinessProbe:
@@ -32,7 +32,7 @@ spec:
               command:
                 - /bin/bash
                 - -c
-                - PGPASSWORD=$POSTGRES_PASSWORD psql -U $POSTGRES_USER -d $POSTGRES_DB -c 'SELECT 1 FROM song_dao LIMIT 1;'
+                - PGPASSWORD=$POSTGRES_PASSWORD psql -U $POSTGRES_USER -d $POSTGRES_DB -c 'SELECT 1 FROM mp3resource LIMIT 1;'
             initialDelaySeconds: 10
             periodSeconds: 5
             timeoutSeconds: 3
@@ -54,20 +54,20 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   name: app-config-map
-                  key: SONG_POSTGRES_DB_NAME
+                  key: RESOURCE_POSTGRES_DB_NAME
           volumeMounts:
-            - name: song-database-db-pvc
+            - name: resource-database-db-pvc
               mountPath: /var/lib/postgresql/data
             - name: resource-database-init-vol
               mountPath: /docker-entrypoint-initdb.d/init.sql
-              subPath: init-song-db-schema
+              subPath: init-resource-db-schema
       volumes:
         - name: resource-database-init-vol
           configMap:
             name: app-config-map
   volumeClaimTemplates:
     - metadata:
-        name: song-database-db-pvc
+        name: resource-database-db-pvc
       spec:
         accessModes: [ "ReadWriteOnce" ]
         resources:

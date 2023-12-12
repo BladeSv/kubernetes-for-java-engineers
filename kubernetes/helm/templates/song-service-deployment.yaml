@@ -2,24 +2,24 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: song-service-development
-  namespace: k8s-program
+  namespace: {{ .Release.Name }}
   labels:
     app: song-service-development
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: song-service
   template:
     metadata:
       name: song-service
-      namespace: k8s-program
+      namespace: {{ .Release.Name }}
       labels:
         app: song-service
     spec:
       containers:
         - name: song-service-container
-          image: song-service-image:v6
+          image: "song-service-image:{{ .Values.container.service.version }}"
           livenessProbe:
             httpGet:
               port: 8081
