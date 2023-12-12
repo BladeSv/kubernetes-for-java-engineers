@@ -3,6 +3,7 @@ kind: ConfigMap
 metadata:
   name: app-config-map
   namespace: {{ .Release.Name }}
+  {{- template "k8s.course.labels" . }}
 data:
   SONG_SERVICE_URL: "http://song-service-service.k8s-program.svc.cluster.local:8081/songs"
 
