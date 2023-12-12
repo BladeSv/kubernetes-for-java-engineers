@@ -2,24 +2,24 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: resource-service-development
-  namespace: k8s-program
+  namespace: {{ .Release.Name }}
   labels:
     app: resource-service-development
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: resource-service
   template:
     metadata:
       name: resource-service
-      namespace: k8s-program
+      namespace: {{ .Release.Name }}
       labels:
         app: resource-service
     spec:
       containers:
         - name: resource-service-container
-          image: resource-service-image:v6
+          image: "resource-service-image:{{ .Values.container.service.version }}"
           livenessProbe:
             httpGet:
               port: 8080
